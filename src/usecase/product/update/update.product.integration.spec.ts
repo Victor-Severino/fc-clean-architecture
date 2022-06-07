@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize-typescript"
 import Product from "../../../domain/product/entity/product"
 import ProductFactory from "../../../domain/product/factory/product.factory"
 import ProductModel from "../../../infrastructure/product/repository/sequelize/product.model"
+import ProductRepository from "../../../infrastructure/product/repository/sequelize/product.repository"
 import UpdateProductUseCase from "./update.product.usecase"
 
 const product = ProductFactory.create("a", "Product 1", 10)
@@ -9,15 +10,6 @@ const input = {
   id: product.id,
   name: "Product Updated",
   price: 20
-}
-
-const MockRepository = () => {
-  return {
-    create: jest.fn(),
-    findAll: jest.fn(),
-    find: jest.fn().mockReturnValue(Promise.resolve(product)),
-    update: jest.fn(),
-  }
 }
 
 describe("Unit test for product update use case", () => {
@@ -41,9 +33,9 @@ describe("Unit test for product update use case", () => {
 
 
   it("Should update a product", async () => {
-    const productRepository = MockRepository()
+    const productRepository = new ProductRepository()
     productRepository.create(new Product(product.id, product.name, product.price))
-  
+
     const productUpdateUseCase = new UpdateProductUseCase(productRepository)
 
     const output = await productUpdateUseCase.execute(input)
