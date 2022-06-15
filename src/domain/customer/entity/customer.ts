@@ -5,6 +5,7 @@ import CustomerAddressChangedEvent from "../event/customer-address-changed.event
 import SendConsoleLogWhenCustomerAddressChangedHandler from "../event/handler/send-console-log-handler";
 import SendConsoleLog1WhenCustomerIsCreatedHandler from "../event/handler/send-console-log1-handler";
 import SendConsoleLog2WhenCustomerIsCreatedHandler from "../event/handler/send-console-log2-handler";
+import CustomerValidatorFactory from "../factory/customer.validator.factory";
 import Address from "../value-object/address";
 
 export default class Customer extends Entity {
@@ -46,18 +47,7 @@ export default class Customer extends Entity {
   }
 
   validate() {
-    if (this.id.length === 0) {
-      this.notification.addError({
-        context: "customer",
-        message:"Id is required"
-      })
-    }
-    if (this._name.length === 0) {
-      this.notification.addError({
-        context: "customer",
-        message:"Name is required"
-      })
-    }
+    CustomerValidatorFactory.create().validate(this)
   }
 
   changeName(name: string) {
